@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Exit if any command fails
+set -e
+
+# Determine the user's home directory
+if [ "$SUDO_USER" ]; then
+    USER_HOME=$(eval echo ~"$SUDO_USER")
+else
+    USER_HOME=$HOME
+fi
+
+INSTALL_DIR="$USER_HOME/.celerenv"
+
+echo "Starting uninstallation process..."
+
+# Remove the celerenv executable from /usr/local/bin
+if [ -L /usr/local/bin/celerenv ]; then
+    echo "Removing symbolic link from /usr/local/bin..."
+    sudo rm /usr/local/bin/celerenv
+else
+    echo "No symbolic link found in /usr/local/bin."
+fi
+
+# Remove the installation directory
+if [ -d "$INSTALL_DIR" ]; then
+    echo "Removing installation directory: $INSTALL_DIR"
+    rm -rf "$INSTALL_DIR"
+else
+    echo "No installation directory found at $INSTALL_DIR."
+fi
+
+echo "Uninstallation complete."

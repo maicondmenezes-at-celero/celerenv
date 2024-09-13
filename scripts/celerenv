@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Pre-setup for the environment
+function pre-setup() {
+    echo "Setting up Poetry and dependencies..."
+    curl -sSL https://install.python-poetry.org | python3 -
+    pip install --upgrade pip 
+    pip install poetry keyring keyrings.google-artifactregistry-auth 
+    poetry config virtualenvs.in-project true 
+    poetry config repositories.google https://us-east1-python.pkg.dev/celero-main/celero-finance/
+    echo "Pre-setup completed."
+}
+
+# Setup the environment
+function setup() {
+    echo "Installing project dependencies..."
+    pre-setup
+    poetry install
+    echo "Setup completed."
+}
+
+# Local setup for development with gcloud credentials
+function local-setup() {
+    echo "Setting up local development environment..."
+    pre-setup 
+    cp ${HOME}/.config/gcloud/application_default_credentials.json . 
+    poetry install --with dev
+    echo "Local setup completed."
+}
+
+# Google Cloud SDK login
+function glog() {
+    echo "Logging into Google Cloud SDK..."
+    gcloud auth login 
+    gcloud auth application-default login
+    echo "Google Cloud SDK login completed."
+}
+
+# Clean environment for Poetry project
+function venv_clean() {
+    echo "Cleaning Python virtual environment..."
+    deactivate 2>/dev/null || true 
+    rm -rf venv || rm -rf .venv 
+    rm -rf poetry.lock
+    echo "Virtual environment cleaned."
+}
+
+# Setup Python virtual environment
+function venv() {
+    echo "Setting up Python virtual environment..."
+    if [ ! -d ".venv" ]; then
+        python3 -m venv .venv
+    fi
+    source .venv/bin/activate
+    echo "Virtual environment activated."
+}
+
+# Predevelopment setup (gcloud login, clean environment, setup venv)
+function predev() {
+    echo "Performing predevelopment setup..."
+    glog 
+    venv_clean 
+    venv 
+    local-setup
+    echo "Predevelopment setup completed."
+}
+
+# Uninstall the environment
+function uninstall() {
+    echo "Running uninstallation script..."
+    sudo bash ~/.celerenv/uninstall
+}
+
+# Print usage
+function usage() {
+    echo "Available commands:"
+    echo "  pre-setup       - Perform pre-setup for Poetry environment"
+    echo "  setup           - Install project dependencies"
+    echo "  local-setup     - Local development setup with gcloud credentials"
+    echo "  glog            - Google Cloud SDK login"
+    echo "  venv_clean      - Clean the Python virtual environment"
+    echo "  venv            - Create and activate Python virtual environment"
+    echo "  predev          - Perform predevelopment setup"
+    echo "  uninstall       - Uninstall the celerenv environment"
+}
+
+# Main function to handle command line arguments
+if [[ $# -eq 0 ]]; then
+    usage
+else
+    $1
+fi
