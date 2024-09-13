@@ -10,17 +10,17 @@ else
     USER_HOME=$HOME
 fi
 
-REPO_URL="https://github.com/maicondmenezes-at-celero/celerenv"
-INSTALL_DIR="$HOME/.celerenv"
+REPO_URL="https://raw.githubusercontent.com/maicondmenezes-at-celero/celerenv/main"
+INSTALL_DIR="$USER_HOME/.celerenv"
 
 echo "Downloading package..."
 mkdir -p "$INSTALL_DIR"
-wget -qO "$INSTALL_DIR/uninstall" "$SCRIPT_URL/bin/uninstall"
-wget -qO "$INSTALL_DIR/celerenv" "$SCRIPT_URL/scripts/celerenv"
+wget -qO "$INSTALL_DIR/uninstall" "$REPO_URL/bin/uninstall"
+wget -qO "$INSTALL_DIR/celerenv" "$REPO_URL/scripts/celerenv"
 
 echo "Configuring environment..."
-chmod +x $INSTALL_DIR/scripts/celerenv
+chmod +x $INSTALL_DIR/celerenv
 chmod +x $INSTALL_DIR/uninstall
-ln -sf $INSTALL_DIR/scripts/celerenv /usr/local/bin/celerenv
+ln -sf $INSTALL_DIR/celerenv /usr/local/bin/celerenv
 
 echo "Installation complete! You can now use the 'celerenv' command."
