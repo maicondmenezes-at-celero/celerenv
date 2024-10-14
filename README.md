@@ -16,7 +16,7 @@ Celerenv is a CLI tool designed to streamline the setup and management of Python
 To install `celerenv`, run the following command:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/maicondmenezes-at-celero/celerenv/bin/install | sudo bash
+wget -qO- https://raw.githubusercontent.com/maicondmenezes-at-celero/celerenv/refs/heads/main/bin/install | sudo bash
 ```
 
 This command downloads the installation script, configures the environment, and creates a symlink to make the `celerenv` command available globally.
